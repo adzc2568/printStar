@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <title>printStar</title>
+
+    <style>
+        .inputArea {
+            display: flex;
+            justify-content: center;
+            margin-top: 60px;
+        }
+
+        .hourglassArea {
+            display: flex;
+            justify-content: center;
+        }
+
+        .hourglassArea .hourglassContainer {
+            line-height: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="inputArea">
+            <div>
+                <input type="number" min="0" v-model="starAmount" @input="initHourglass">
+                <div class="text" v-if="starAmount % 2 !== 1">
+                    沙漏行數必須為奇數
+                </div>
+            </div>
+            <div>
+                <button @click="printStar(starAmount)">產生沙漏</button>
+            </div>
+        </div>
+
+
+        <div class="hourglassArea">
+            <pre class="hourglassContainer">
+                <div v-for="(el, index) in hourglass">
+                    {{ el }}
+                </div>
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        const vm = new Vue({
+            data() {
+                return {
+                    starAmount: 7,
+
+                    hourglass: [],
+                }
+            },
+            created() {
+                this.printStar(this.starAmount)
+            },
+            methods: {
+                initHourglass() {
+                    this.hourglass = this.$options.data.call(this).hourglass
+                },
+                printStar(width) {
+                    if (width % 2 === 1) {
+                        this.initHourglass();
+
+                        const topCount = Math.ceil(width / 2);
+                        for (let i = topCount; i > 0; i--) {
+                            let row = '';
+                            for (let j = 0; j < (topCount - i); j++) {
+                                row += ' ';
+                            }
+                            for (let k = 0; k < (2 * i) - 1; k++) {
+                                row += '*';
+                            }
+                            this.hourglass.push(row);
+                        }
+
+                        const bottomCount = width - topCount;
+                        for (let i = 1; i <= bottomCount; i++) {
+                            let row = '';
+                            for (let j = 0; j < (bottomCount - i); j++) {
+                                row += ' ';
+                            }
+                            for (let k = 0; k < (2 * i) + 1; k++) {
+                                row += '*';
+                            }
+                            this.hourglass.push(row);
+                        }
+
+                        console.log(this.hourglass)
+                    }
+                }
+            }
+        }).$mount('#app')
+
+    </script>
+</body>
+
+</html>
